@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Leave Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script>window.react = window.React;</script>
+    <script src="https://unpkg.com/lucide-react@0.263.0/dist/umd/lucide-react.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+
+<body class="bg-slate-50 text-slate-900">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        console.log("React is:", React);
+        console.log("react is:", window.react);
+        console.log("LucideReact is:", LucideReact);
+        if (window.LucideReact) {
+            console.log("LayoutDashboard is:", LucideReact.LayoutDashboard);
+        }
+        const { useState, useEffect } = React;
+        const { Search, FileText, LayoutDashboard, UserPlus, Upload, Download, Printer, Filter, Trash2 } = LucideReact;
+
+const INITIAL_STUDENTS = [
+    {
+        "Student Name":  "ADHITHYA S",
+        "Register No":  "110725105002",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "7708057423",
+        "Parent Number":  "7708057423"
+    },
+    {
+        "Student Name":  "AHMED AQEEL I",
+        "Register No":  "110725105003",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "7305646987",
+        "Parent Number":  "7305646987"
+    },
+    {
+        "Student Name":  "AKILAN T",
+        "Register No":  "110725105005",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "8056379390",
+        "Parent Number":  "8056379390"
+    },
+    {
+        "Student Name":  "BADHRINATHAN M",
+        "Register No":  "110725105007",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "9962318254",
+        "Parent Number":  "9962318254"
+    },
+    {
+        "Student Name":  "DEEPAK D",
+        "Register No":  "110725105009",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "8681010153",
+        "Parent Number":  "8681010153"
+    },
+    {
+        "Student Name":  "DEEPAK S",
+        "Register No":  "110725105010",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "9940629332",
+        "Parent Number":  "9940629332"
+    },
+    {
+        "Student Name":  "DEVADARSHAN A",
+        "Register No":  "110725105011",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "6383116891",
+        "Parent Number":  "6383116091"
+    },
+    {
+        "Student Name":  "DEVRAJ S",
+        "Register No":  "110725105012",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "6380681366",
+        "Parent Number":  "6380681366"
+    },
+    {
+        "Student Name":  "DHANUSUJAN M",
+        "Register No":  "110725105013",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "9941476207",
+        "Parent Number":  "9094469168"
+    },
+    {
+        "Student Name":  "DHARSAN R A",
+        "Register No":  "110725105014",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "8667021564",
+        "Parent Number":  "8667021564"
+    },
+    {
+        "Student Name":  "DHARSHAN M",
+        "Register No":  "110725105016",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "7708159753",
+        "Parent Number":  "7708159753"
+    },
+    {
+        "Student Name":  "DILLIYESVARAN R",
+        "Register No":  "110725105018",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "9363745307",
+        "Parent Number":  "601204"
+    },
+    {
+        "Student Name":  "GAUTHAM P",
+        "Register No":  "110725105022",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "6379905110",
+        "Parent Number":  "6379905110"
+    },
+    {
+        "Student Name":  "HARI KRISHNAN A R",
+        "Register No":  "110725105024",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "6369433683",
+        "Parent Number":  "6369433683"
+    },
+    {
+        "Student Name":  "HARISH K",
+        "Register No":  "110725105026",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "6379772887",
+        "Parent Number":  "9585640866"
+    },
+    {
+        "Student Name":  "HEMA SURYA E T",
+        "Register No":  "110725105027",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "7708948403",
+        "Parent Number":  "7708948403"
+    },
+    {
+        "Student Name":  "JAGANATHAN L",
+        "Register No":  "110725105031",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "7305132246",
+        "Parent Number":  "8939385625"
+    },
+    {
+        "Student Name":  "JAI AKASH M",
+        "Register No":  "110725105032",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "9500904068",
+        "Parent Number":  "9500904068"
+    },
+    {
+        "Student Name":  "JAI GANESH P",
+        "Register No":  "110725105033",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "8056692008",
+        "Parent Number":  "8056692008"
+    },
+    {
+        "Student Name":  "JHOTHIPRAKASH S",
+        "Register No":  "110725105037",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "9080783259",
+        "Parent Number":  "8754230672"
+    },
+    {
+        "Student Name":  "KATHIRAVAN M S",
+        "Register No":  "110725105041",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "7305823219",
+        "Parent Number":  "7305823219"
+    },
+    {
+        "Student Name":  "KISHOR M",
+        "Register No":  "110725105044",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "9342466086",
+        "Parent Number":  "9342466086"
+    },
+    {
+        "Student Name":  "KOWSAL MANZER A",
+        "Register No":  "110725105047",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "8438403258",
+        "Parent Number":  "8438403258"
+    },
+    {
+        "Student Name":  "KRISHNA VIDHYA M",
+        "Register No":  "110725105048",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "9360212424",
+        "Parent Number":  "9360212424"
+    },
+    {
+        "Student Name":  "LALIT J",
+        "Register No":  "110725105050",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "7373556468",
+        "Parent Number":  "7373556468"
+    },
+    {
+        "Student Name":  "LINGESH R K",
+        "Register No":  "110725105051",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "7708377831",
+        "Parent Number":  "7708377831"
+    },
+    {
+        "Student Name":  "LOGESHWARAN D",
+        "Register No":  "110725105052",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "9003204436",
+        "Parent Number":  "9003204436"
+    },
+    {
+        "Student Name":  "MICHEAL JEBARSON M",
+        "Register No":  "110725105053",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "8667489442",
+        "Parent Number":  "8667489442"
+    },
+    {
+        "Student Name":  "MOHAMED ANAZ H",
+        "Register No":  "110725105054",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "9342415172",
+        "Parent Number":  "9342415172"
+    },
+    {
+        "Student Name":  "MOHAMMED MUFEETH S",
+        "Register No":  "110725105057",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "9363492538",
+        "Parent Number":  "9363492538"
+    },
+    {
+        "Student Name":  "MUKESH V",
+        "Register No":  "110725105063",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "6383159816",
+        "Parent Number":  "6383159816"
+    },
+    {
+        "Student Name":  "NAGALINGAM L",
+        "Register No":  "110725105065",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "6374258725",
+        "Parent Number":  "6374258725"
+    },
+    {
+        "Student Name":  "NAGULAN R",
+        "Register No":  "110725105066",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "7603898501",
+        "Parent Number":  "7603898501"
+    },
+    {
+        "Student Name":  "PRADEEBAN E",
+        "Register No":  "110725105072",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "8015904491",
+        "Parent Number":  "8015904491"
+    },
+    {
+        "Student Name":  "RAHUL G",
+        "Register No":  "110725105074",
+        "Department":  "B.E.Computer Science and Engineering (Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "9444149494",
+        "Parent Number":  "9444149494"
+    },
+    {
+        "Student Name":  "RENUGA S",
+        "Register No":  "110725105076",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "6385312985",
+        "Parent Number":  "6385312985"
+    },
+    {
+        "Student Name":  "ROHITH V",
+        "Register No":  "110725105077",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "9342112952",
+        "Parent Number":  "9342112952"
+    },
+    {
+        "Student Name":  "RUBESH KUMAR S",
+        "Register No":  "110725105079",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "9361401058",
+        "Parent Number":  "9840963677"
+    },
+    {
+        "Student Name":  "RUTHRES S",
+        "Register No":  "110725105080",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "6383043603",
+        "Parent Number":  "6383043603"
+    },
+    {
+        "Student Name":  "SAKUNTHALA V",
+        "Register No":  "110725105083",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "9003354485",
+        "Parent Number":  "9003354485"
+    },
+    {
+        "Student Name":  "SANGEETHA I",
+        "Register No":  "110725105085",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "7548867969",
+        "Parent Number":  "8148905116"
+    },
+    {
+        "Student Name":  "SANJAY D",
+        "Register No":  "110725105086",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "8870620760",
+        "Parent Number":  "8870620760"
+    },
+    {
+        "Student Name":  "SANTHOSH A",
+        "Register No":  "110725105087",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "7200240610",
+        "Parent Number":  "7200240610"
+    },
+    {
+        "Student Name":  "SANTHOSH S",
+        "Register No":  "110725105088",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "8270988427",
+        "Parent Number":  "8270988427"
+    },
+    {
+        "Student Name":  "SENTHAMIZHSELVAN V",
+        "Register No":  "110725105089",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "7200209194",
+        "Parent Number":  "8438433898"
+    },
+    {
+        "Student Name":  "SIMON PAUL P",
+        "Register No":  "110725105095",
+        "Department":  "B.E Computer Science and Engineering (Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "8838096034",
+        "Parent Number":  "8838096034"
+    },
+    {
+        "Student Name":  "SUDHARSON C",
+        "Register No":  "110725105099",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "9342426793",
+        "Parent Number":  "9342426793"
+    },
+    {
+        "Student Name":  "SUNIL SRIRAM R",
+        "Register No":  "110725105101",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "6382007676",
+        "Parent Number":  "6382007676"
+    },
+    {
+        "Student Name":  "SURYA M",
+        "Register No":  "110725105103",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "8778963900",
+        "Parent Number":  "8778963900"
+    },
+    {
+        "Student Name":  "SWETHA S",
+        "Register No":  "110725105104",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "9487062766",
+        "Parent Number":  "9487062766"
+    },
+    {
+        "Student Name":  "TAMILMANI S",
+        "Register No":  "110725105106",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "9952081055",
+        "Parent Number":  "9952081055"
+    },
+    {
+        "Student Name":  "TATAVALU VINAYA KAUSHIK",
+        "Register No":  "110725105109",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "9344331599",
+        "Parent Number":  "9344331599"
+    },
+    {
+        "Student Name":  "THARUN RHAM S",
+        "Register No":  "110725105111",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "8870798357",
+        "Parent Number":  "8870798357"
+    },
+    {
+        "Student Name":  "WESELY AKASH M J",
+        "Register No":  "110725105116",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "7358631488",
+        "Parent Number":  "7358631488"
+    },
+    {
+        "Student Name":  "YUKESH T",
+        "Register No":  "",
+        "Department":  "B.E. Computer Science and Engineering(Cybersecurity)",
+        "Batch":  "2025-2029",
+        "Year":  "2nd Year",
+        "Contact Number":  "7200410242",
+        "Parent Number":  "7200410242"
+    }
+];
+
+        const App = () => {
+            const [view, setView] = useState('dashboard');
+            const [students, setStudents] = useState(INITIAL_STUDENTS);
+            const [leaveRecords, setLeaveRecords] = useState([]);
+
+            // Native Excel File Reader (.xlsx / .xls) with automatic column alignment correction
+            const handleExcelUpload = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (evt) => {
+                    const data = evt.target.result;
+                    const workbook = XLSX.read(data, { type: 'binary' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+
+                    // Read sheet rows as raw array of arrays
+                    const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                    if (rows.length < 2) {
+                        alert("The sheet does not contain enough data rows.");
+                        return;
+                    }
+
+                    const headers = rows[0];
+                    
+                    // Helper to safely read and clean values
+                    const getVal = (row, idx) => {
+                        const val = row[idx];
+                        if (val === undefined || val === null) return '';
+                        if (val instanceof Date) {
+                            return val.toISOString().split('T')[0];
+                        }
+                        return String(val).trim();
+                    };
+
+                    // Detect shifted layout pattern by checking if headers[13] is 'Residential Type' and headers[14] is 'Gender'
+                    const isShiftedPattern = headers[13] === 'Residential Type' && headers[14] === 'Gender';
+                    const parsedStudents = [];
+
+                    for (let i = 1; i < rows.length; i++) {
+                        const r = rows[i];
+                        if (!r || r.length === 0 || !r[2]) continue; // Skip empty rows or rows without student name
+
+                        let record = {};
+                        if (isShiftedPattern) {
+                            // Map using our manual offset shift correction
+                            const fatherMobile = getVal(r, 26);
+                            const motherMobile = getVal(r, 27);
+                            const parentMobile = (fatherMobile && fatherMobile !== 'NIL') ? fatherMobile : (motherMobile !== 'NIL' ? motherMobile : '');
+
+                            record = {
+                                'Student Name': getVal(r, 2),
+                                'Register No': getVal(r, 1),
+                                'Department': getVal(r, 5), // Map Section to Department
+                                'Batch': getVal(r, 4),
+                                'Year': '2nd Year',
+                                'Contact Number': getVal(r, 25), // Map Mobile
+                                'Parent Number': parentMobile
+                            };
+                        } else {
+                            // Standard layout fallback - map headers directly
+                            const getHeaderIdx = (nameMatches) => {
+                                return headers.findIndex(h => h && nameMatches.some(m => String(h).trim().toLowerCase().includes(m.toLowerCase())));
+                            };
+                            
+                            const nameIdx = getHeaderIdx(['student name', 'name']);
+                            const regIdx = getHeaderIdx(['register no', 'register number', 'reg no']);
+                            const deptIdx = getHeaderIdx(['department', 'section', 'course']);
+                            const batchIdx = getHeaderIdx(['batch', 'year joined']);
+                            const mobileIdx = getHeaderIdx(['mobile', 'phone', 'contact']);
+                            const fatherIdx = getHeaderIdx(['father mobile', 'father phone', 'father contact']);
+                            const motherIdx = getHeaderIdx(['mother mobile', 'mother phone', 'mother contact']);
+                            
+                            const fatherMobile = fatherIdx !== -1 ? getVal(r, fatherIdx) : '';
+                            const motherMobile = motherIdx !== -1 ? getVal(r, motherIdx) : '';
+                            const parentMobile = (fatherMobile && fatherMobile !== 'NIL') ? fatherMobile : (motherMobile !== 'NIL' ? motherMobile : '');
+
+                            record = {
+                                'Student Name': nameIdx !== -1 ? getVal(r, nameIdx) : '',
+                                'Register No': regIdx !== -1 ? getVal(r, regIdx) : '',
+                                'Department': deptIdx !== -1 ? getVal(r, deptIdx) : '',
+                                'Batch': batchIdx !== -1 ? getVal(r, batchIdx) : '',
+                                'Year': '2nd Year',
+                                'Contact Number': mobileIdx !== -1 ? getVal(r, mobileIdx) : '',
+                                'Parent Number': parentMobile
+                            };
+                        }
+                        parsedStudents.push(record);
+                    }
+
+                    setStudents(parsedStudents);
+                    alert(`Success: Imported ${parsedStudents.length} student records directly from your Excel file!`);
+                };
+                reader.readAsBinaryString(file);
+            };
+
+            return (
+                <div className="flex min-h-screen">
+                    {/* Sidebar */}
+                    <aside className="w-64 bg-white border-r border-slate-200 p-6 flex flex-col">
+                        <div className="mb-8">
+                            <h1 className="text-xl font-bold text-blue-600">HOD LeavePortal</h1>
+                            <p className="text-xs text-slate-400">Department Dashboard</p>
+                        </div>
+                        <nav className="space-y-2 flex-1">
+                            <NavItem active={view === 'dashboard'} icon={<LayoutDashboard size={18} />} label="Dashboard" onClick={() => setView('dashboard')} />
+                            <NavItem active={view === 'reports'} icon={<FileText size={18} />} label="Leave Reports" onClick={() => setView('reports')} />
+                            <NavItem active={view === 'admin'} icon={<UserPlus size={18} />} label="Admin Database" onClick={() => setView('admin')} />
+                        </nav>
+                    </aside>
+
+                    {/* Main Content */}
+                    <main className="flex-1 p-8 overflow-y-auto">
+                        {view === 'dashboard' && <DashboardView students={students} leaveRecords={leaveRecords} setLeaveRecords={setLeaveRecords} />}
+                        {view === 'reports' && <ReportsView leaveRecords={leaveRecords} setLeaveRecords={setLeaveRecords} />}
+                        {view === 'admin' && <AdminView handleExcelUpload={handleExcelUpload} studentCount={students.length} />}
+                    </main>
+                </div>
+            );
+        };
+
+        const NavItem = ({ icon, label, onClick, active }) => (
+            <button
+                onClick={onClick}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${active ? 'bg-blue-50 text-blue-600 font-semibold border-l-4 border-blue-600' : 'text-slate-600 hover:bg-slate-50'}`}
+            >
+                {icon} <span className="text-sm">{label}</span>
+            </button>
+        );
+
+        const DashboardView = ({ students, leaveRecords, setLeaveRecords }) => {
+            const [search, setSearch] = useState('');
+            const [selectedStudent, setSelectedStudent] = useState(null);
+            const [reason, setReason] = useState('');
+            const [notes, setNotes] = useState('');
+
+            const handleSearch = () => {
+                const searchClean = search.trim().toLowerCase();
+                if (!searchClean) return;
+
+                // Find student by exact Register No, then substring match of name
+                const found = students.find(s => {
+                    const reg = s['Register No'] ? String(s['Register No']).trim().toLowerCase() : '';
+                    const name = s['Student Name'] ? String(s['Student Name']).trim().toLowerCase() : '';
+                    return reg === searchClean || name.includes(searchClean);
+                });
+
+                if (!found) {
+                    alert("Student not found. Try searching with a different Register Number or Name.");
+                    setSelectedStudent(null);
+                } else {
+                    setSelectedStudent(found);
+                }
+            };
+
+            const submitLeave = (e) => {
+                e.preventDefault();
+                const newRecord = {
+                    ...selectedStudent,
+                    date: new Date().toLocaleDateString('en-CA'), // ISO standard YYYY-MM-DD
+                    reason: reason,
+                    notes: notes
+                };
+                setLeaveRecords([...leaveRecords, newRecord]);
+                alert("Leave Saved Successfully!");
+                setSelectedStudent(null);
+                setReason('');
+                setNotes('');
+                setSearch('');
+            };
+
+            const renderField = (label, val) => (
+                <div className="flex flex-col sm:flex-row sm:justify-between border-b border-dashed border-slate-100 py-2.5 gap-1">
+                    <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{label}:</span>
+                    <span className="text-sm font-bold text-slate-800 break-all text-right">{val || 'N/A'}</span>
+                </div>
+            );
+
+            return (
+                <div className="space-y-6">
+                    {/* Search Panel */}
+                    <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                        <h2 className="text-lg font-semibold text-slate-800 mb-2">Search Student Profile</h2>
+                        <p className="text-sm text-slate-500 mb-4">Search instantly using Register Number or Student Name.</p>
+                        <div className="flex gap-2">
+                            <input
+                                className="flex-1 border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-sm"
+                                placeholder="Enter Register Number (e.g. 110725105002) or Student Name..."
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                            />
+                            <button onClick={handleSearch} className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2.5 rounded-lg shadow-sm transition">Search</button>
+                        </div>
+                    </div>
+
+                    {selectedStudent && (
+                        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                            {/* Student Profile Card */}
+                            <div className="xl:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                                <div>
+                                    {/* Header with avatar and quick info */}
+                                    <div className="flex items-center gap-4 border-b pb-4 mb-4">
+                                        <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 text-white flex items-center justify-center font-bold text-2xl shadow-md uppercase">
+                                            {selectedStudent['Student Name'] ? selectedStudent['Student Name'].split(' ')[0][0] : '?'}
+                                        </div>
+                                        <div>
+                                            <h3 className="text-xl font-extrabold text-slate-800">{selectedStudent['Student Name']}</h3>
+                                            <p className="text-sm text-blue-600 font-bold">{selectedStudent['Department'] || 'N/A'}</p>
+                                            <p className="text-xs text-slate-400 font-medium">Reg No: {selectedStudent['Register No'] || 'N/A'}</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Minimalist Profile Fields */}
+                                    <div className="flex-1 space-y-2 pr-1">
+                                        {renderField('Full Name', selectedStudent['Student Name'])}
+                                        {renderField('Register No', selectedStudent['Register No'])}
+                                        {renderField('Department', selectedStudent['Department'])}
+                                        {renderField('Batch', selectedStudent['Batch'])}
+                                        {renderField('Year', selectedStudent['Year'])}
+                                        {renderField('Contact Number', selectedStudent['Contact Number'])}
+                                        {renderField('Parent/Guardian Number', selectedStudent['Parent Number'])}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Leave Report Form */}
+                            <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                                <div>
+                                    <h3 className="text-lg font-bold text-slate-800 border-b pb-3 mb-4">Create Leave Entry</h3>
+                                    <form onSubmit={submitLeave} className="space-y-4">
+                                        <div>
+                                            <label className="block text-xs font-semibold uppercase text-slate-500 mb-1">Date</label>
+                                            <input type="date" defaultValue={new Date().toISOString().split('T')[0]} className="w-full border rounded-lg p-2.5 bg-slate-50 text-slate-600 text-sm" disabled />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-semibold uppercase text-slate-500 mb-1">Reason for Leave</label>
+                                            <textarea
+                                                value={reason}
+                                                onChange={(e) => setReason(e.target.value)}
+                                                className="w-full border rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 text-sm"
+                                                rows="3"
+                                                placeholder="Reason for absence..."
+                                                required
+                                            ></textarea>
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-semibold uppercase text-slate-500 mb-1">Additional Remarks</label>
+                                            <input
+                                                value={notes}
+                                                onChange={(e) => setNotes(e.target.value)}
+                                                className="w-full border rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 text-sm"
+                                                placeholder="Doctor certificate submitted / Prior permission"
+                                            />
+                                        </div>
+                                        <div className="flex gap-2 pt-2">
+                                            <button type="submit" className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 rounded-lg shadow-sm transition text-sm">Save Report</button>
+                                            <button type="button" onClick={() => setSelectedStudent(null)} className="bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold px-4 rounded-lg transition text-sm">Clear</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const ReportsView = ({ leaveRecords, setLeaveRecords }) => {
+            const [filterTerm, setFilterTerm] = useState('');
+
+            const filteredRecords = leaveRecords.filter(r => {
+                const name = r['Student Name'] ? String(r['Student Name']).toLowerCase() : '';
+                const reg = r['Register No'] ? String(r['Register No']).toLowerCase() : '';
+                const dept = r['Department'] ? String(r['Department']).toLowerCase() : '';
+                const match = filterTerm.toLowerCase();
+                return name.includes(match) || reg.includes(match) || dept.includes(match);
+            });
+
+            const exportToExcel = () => {
+                if (filteredRecords.length === 0) return alert("No records available to export!");
+                const ws = XLSX.utils.json_to_sheet(filteredRecords);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Leave Log");
+                XLSX.writeFile(wb, "HOD_Student_Leaves.xlsx");
+            };
+
+            const printReport = () => {
+                window.print();
+            };
+
+            return (
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                        <div>
+                            <h2 className="text-xl font-bold text-slate-800">Leave Logs & History</h2>
+                            <p className="text-xs text-slate-500">Live operational view of leave logs registered today</p>
+                        </div>
+                        <div className="flex gap-2 w-full md:w-auto">
+                            <button onClick={printReport} className="flex items-center gap-2 bg-slate-100 border text-slate-700 px-4 py-2 rounded-lg hover:bg-slate-200 transition text-sm font-semibold">
+                                <Printer size={16} /> Print Page
+                            </button>
+                            <button onClick={exportToExcel} className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm font-semibold">
+                                <Download size={16} /> Export Excel
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="mb-4">
+                        <input
+                            className="w-full md:w-80 border border-slate-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                            placeholder="Filter by Name, Reg No, or Dept..."
+                            onChange={(e) => setFilterTerm(e.target.value)}
+                        />
+                    </div>
+
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left text-sm">
+                            <thead className="bg-slate-50 border-b text-slate-600 font-semibold uppercase text-xs">
+                                <tr>
+                                    <th className="p-4">Reg No</th>
+                                    <th className="p-4">Student Name</th>
+                                    <th className="p-4">Department</th>
+                                    <th className="p-4">Leave Reason</th>
+                                    <th className="p-4">Recorded On</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-100 text-slate-700">
+                                {filteredRecords.length > 0 ? (
+                                    filteredRecords.map((r, i) => (
+                                        <tr key={i} className="hover:bg-slate-50">
+                                            <td className="p-4 font-semibold text-blue-600">{r['Register No']}</td>
+                                            <td className="p-4">{r['Student Name']}</td>
+                                            <td className="p-4">{r['Department'] || 'N/A'}</td>
+                                            <td className="p-4">{r.reason}</td>
+                                            <td className="p-4 text-slate-500">{r.date}</td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="5" className="p-8 text-center text-slate-400">No matching leave records found.</td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            );
+        };
+
+        const AdminView = ({ handleExcelUpload, studentCount }) => (
+            <div className="max-w-xl mx-auto bg-white p-8 rounded-xl shadow-sm border border-slate-200 text-center">
+                <h2 className="text-xl font-bold text-slate-800 mb-2">Import Student Records</h2>
+                <p className="text-sm text-slate-500 mb-6">Import clean XLS / XLSX files straight from Microsoft Excel. Columns parsed dynamically.</p>
+                <div className="border-2 border-dashed border-blue-200 rounded-lg p-10 bg-slate-50 hover:bg-blue-50/50 transition">
+                    <Upload className="mx-auto text-blue-500 mb-4" size={48} />
+                    <input type="file" accept=".xlsx, .xls" onChange={handleExcelUpload} className="hidden" id="excelInput" />
+                    <label htmlFor="excelInput" className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2.5 rounded-lg inline-block shadow transition">
+                        Select Excel File (.xlsx)
+                    </label>
+                    <p className="mt-4 text-xs text-slate-400">Required columns: Student Name, Register No, Department/Section, Batch, Mobile/Phone, Father/Mother Contact</p>
+                </div>
+                <div className="mt-6 border-t pt-4">
+                    <p className="text-sm text-slate-600">Currently Loaded Dataset Size: <strong className="text-blue-600">{studentCount} Students</strong></p>
+                </div>
+            </div>
+        );
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+
+</html>
